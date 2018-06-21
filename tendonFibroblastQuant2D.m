@@ -14,10 +14,11 @@ parameters.deathThresholdRatio = 0.5; % the channel ratio (channelDead/channelAl
 parameters.adaptiveSensitivity = 0.4; % [0-1]
 parameters.watershedSensitivity = 1; % increase if image is oversegmented
 parameters.medfiltWindowsize = 2; % increase if nuclei seem fuzzy
-parameters.root_folder = 'P:\Data\LD_1-76-xx\';
-parameters.image_folder = strcat(parameters.root_folder, 'Images\');
-parameters.results_folder = strcat(parameters.root_folder, 'Results2D_', strrep(strrep(char(datetime), ':', '-'), ' ', '-'), '\');
-parameters.outfile_summary = strcat(parameters.results_folder, '01_ResultsSummary.csv');
+parameters.alternatingChannels = 1; % if set to 1 channels are alternating in the tiff file, otherwise first n/2 images are channelAll last images channelDead
+parameters.root_folder = 'J:\Data_Tino\LD_1-76-xx\';
+parameters.image_folder = fullfile(parameters.root_folder, 'Images');
+parameters.results_folder = fullfile(parameters.root_folder, ['Results2D_', strrep(strrep(char(datetime), ':', '-'), ' ', '-')]);
+parameters.outfile_summary = fullfile(parameters.results_folder, '01_ResultsSummary.csv');
 parameters.maximumExpectedRatio = 1.25; %channel ratio with maximum color for visualization
 parameters.minimumExpectedRatio = 0; %channel ratio with minimum color for visualization
 
@@ -38,20 +39,20 @@ header = strjoin(header, ',');
 fid = fopen(parameters.outfile_summary, 'w+');
 fprintf(fid,'%s\n',header);
 fclose(fid);
-writeStruct(strcat(parameters.results_folder, '00_Parameters.txt'), parameters);
+writeStruct(fullfile(parameters.results_folder, '00_Parameters.txt'), parameters);
 
 
 
 files = dir(fullfile(parameters.image_folder,'*.tf8'));
 
 for i = 1:length(files)
-    filename = strcat(parameters.image_folder, files(i).name);
+    filename = fullfile(parameters.image_folder, files(i).name);
     %filename = strcat(parameters.image_folder, '03.04.2018_Exp1-76-4_1a.tf8');
     parameters.name = files(i).name;
     
     %% Load data
     disp('Loading data:');
-    data = loadData(filename);
+    data = loadData(filename, parameters);
 
 
 
@@ -104,7 +105,7 @@ for i = 1:length(files)
     disp('Save results:')
     tic
     %Save one .csv file per image containing all the measurements
-    writetable(ResultsTable, strcat(parameters.results_folder, parameters.name(1:end-4), '.csv'));
+    writetable(ResultsTable, fullfile(parameters.results_folder, [parameters.name(1:end-4), '.csv']));
     
     %Append the summary to the ResultsSummary.csv file
     line = {ResultsSummary.name, num2str(ResultsSummary.cellsTotal), ...
@@ -117,10 +118,10 @@ for i = 1:length(files)
     
     %If selectd save visualizations
     if parameters.saveRatioImage
-        imwrite(ratioImage, strcat(parameters.results_folder, parameters.name(1:end-4), '_ratio.png'));
+        imwrite(ratioImage, fullfile(parameters.results_folder, [parameters.name(1:end-4), '_ratio.png']));
     end
     if parameters.saveDeadAliveImage
-        imwrite(deadAliveImage, strcat(parameters.results_folder, parameters.name(1:end-4), '_deadAlive.png'));
+        imwrite(deadAliveImage, fullfile(parameters.results_folder, [parameters.name(1:end-4), '_deadAlive.png']));
     end
     toc
 end
