@@ -18,6 +18,13 @@ else
     arrayStackAll = raw_data(:, :, 1:round(n/2));
     arrayStackDead = raw_data(:, :, round(n/2):end);
 end
+
+if parameters.reverseOrderOfChannels
+    temp = arrayStackDead;
+    arrayStackDead = arrayStackAll;
+    arrayStackAll = temp;
+end
+
 data.dataAll = flip(arrayStackAll, 3);
 data.dataDead = flip(arrayStackDead, 3);
 data.imageAll = mat2gray(data.dataAll, [0 2000]);

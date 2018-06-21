@@ -6,8 +6,9 @@ parameters.scale = [0.619 0.619 1]; % [um] physical x y and z dimension of the i
 %parameters.scale = [0.3095 0.3095 2]; % [um] physical x y and z dimension of the input images
 parameters.measurementDepth = 60; %[um] 
 parameters.root_folder = 'J:\Data_Tino\LD_1-76-xx';
-parameters.image_folder = fullfile(parameters.root_folder, 'Images\');
-parameters.alternatingChannels = 1;
+parameters.image_folder = fullfile(parameters.root_folder, 'Images');
+parameters.alternatingChannels = 1; % if set to 1 channels are alternating in the tiff file, otherwise first n/2 images are channelAll last images channelDead
+parameters.reverseOrderOfChannels = 0; % 0 means channelAll first, 1 means channelDead first
 
 parameters.outfile_volume = fullfile(parameters.root_folder, '01_VolumeSummary.csv');
 
