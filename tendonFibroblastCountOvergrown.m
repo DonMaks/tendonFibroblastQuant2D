@@ -2,19 +2,12 @@ clear all;
 mfilepath = fileparts(which(mfilename));
 addpath(fullfile(mfilepath, 'functions'));
 
-%parameters.scale = [0.619 0.619 1]; % [um] physical x y and z dimension of the input images
-parameters.scale = [0.3095 0.3095 2]; % [um] physical x y and z dimension of the input images
-parameters.measurementDepth = 60; %[um] how deep to measure into the tendon
-parameters.stepSize = 10; % [um] depth of the z-projection steps
-parameters.meanNucleusArea = 150; % [um^2] average area of a nucleus
-parameters.adaptiveSensitivity = 0.5; % [0-1]
-parameters.alternatingChannels = 1; % if set to 1 channels are alternating in the tiff file, otherwise first n/2 images are channelAll last images channelDead
-parameters.reverseOrderOfChannels = 0; % 0 means channelAll first, 1 means channelDead first
-parameters.root_folder = 'J:\Stefania_SampleImages'; % The rootfolder containing your 'Images' folder and where the 'Results' folder will be created
+loadParameters;
+
 parameters.image_folder = fullfile(parameters.root_folder, 'CrowdedImages');
 parameters.results_folder = fullfile(parameters.root_folder, ['ResultsCrowded_', strrep(strrep(char(datetime), ':', '-'), ' ', '-')]);
 parameters.outfile_summary = fullfile(parameters.results_folder, '01_ResultsSummary.csv');
-parameters.visualizeResults = true;
+
 
 
 parameters.pixelArea = prod(parameters.scale(1:2));
@@ -32,7 +25,7 @@ writeStruct(fullfile(parameters.results_folder, '00_Parameters.txt'), parameters
 
 
 
-files = dir(fullfile(parameters.image_folder, '*.tif'));
+files = dir(fullfile(parameters.image_folder, ['*', parameters.filenameExtension]));
 
 for i = 1:length(files)
     filename = fullfile(parameters.image_folder, files(i).name);
@@ -84,7 +77,7 @@ for i = 1:length(files)
     %% Apply a threshold for every zProjected slice and add up the areas
     data.maskedZProjects = zeros(size(data.zProjects));
     for j = 1:size(data.zProjects, 3)
-        data.maskedZProjects(:, :, j) = bwareaopen(imbinarize(data.zProjects(:, :, j), 'adaptive', 'Sensitivity', parameters.adaptiveSensitivity), 10);
+        data.maskedZProjects(:, :, j) = bwareaopen(imbinarize(data.zProjects(:, :, j), 'adaptive', 'Sensitivity', parameters.adaptiveSensitivityOvergrown), 10);
     end
     
     areaCoveredByNuclei = sum(data.maskedZProjects(:)) * parameters.pixelArea;

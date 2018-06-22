@@ -8,7 +8,7 @@ function writeStruct(filename, struct)
                 fprintf(fid, format, f{i}, struct.(f{i}));
             elseif length(struct.(f{i}))>1
                 for k = 1:length(struct.(f{i}))
-                    fprintf(fid, format, strcat(f{i}, '_', num2str(k)) , struct.(f{1})(k));
+                    fprintf(fid, format, strcat(f{i}, '_', num2str(k)) , struct.(f{i})(k));
                 end
             end
         end

@@ -2,14 +2,10 @@ clear all;
 mfilepath = fileparts(which(mfilename));
 addpath(fullfile(mfilepath, 'functions'));
 
-parameters.scale = [0.619 0.619 1]; % [um] physical x y and z dimension of the input images
-%parameters.scale = [0.3095 0.3095 2]; % [um] physical x y and z dimension of the input images
-parameters.measurementDepth = 60; %[um] 
-parameters.root_folder = 'J:\Data_Tino\LD_1-76-xx';
-parameters.image_folder = fullfile(parameters.root_folder, 'Images');
-parameters.alternatingChannels = 1; % if set to 1 channels are alternating in the tiff file, otherwise first n/2 images are channelAll last images channelDead
-parameters.reverseOrderOfChannels = 0; % 0 means channelAll first, 1 means channelDead first
+loadParameters;
 
+parameters.image_folder1 = fullfile(parameters.root_folder, 'Images');
+parameters.image_folder2 = fullfile(parameters.root_folder, 'CrowdedImages');
 parameters.outfile_volume = fullfile(parameters.root_folder, '01_VolumeSummary.csv');
 
 %write header to summary file and parameter file
@@ -19,19 +15,33 @@ fid = fopen(parameters.outfile_volume, 'w+');
 fprintf(fid,'%s\n',header);
 fclose(fid);
 
+files1 = dir(fullfile(parameters.image_folder1,['*', parameters.filenameExtension]));
+files2 = dir(fullfile(parameters.image_folder2,['*', parameters.filenameExtension]));
 
-
-files = dir(fullfile(parameters.image_folder,'*.tf8'));
-
-for i = 1:length(files)
-    filename = fullfile(parameters.image_folder, files(i).name);
+for i = 1:length(files1)
+    filename = fullfile(parameters.image_folder1, files1(i).name);
     disp('Loading data:');
     data = loadData(filename, parameters);
     maximumProjection = imadjust(max(data.imageAll, [], 3));
     [~, lengthPx, diameterPx] = measureGUI(maximumProjection);
     tendon = Tendon(lengthPx, diameterPx, parameters);
     
-    line = {files(i).name, num2str(tendon.volume), num2str(tendon.length),...
+    line = {files1(i).name, num2str(tendon.volume), num2str(tendon.length),...
+        num2str(tendon.diameter), num2str(tendon.depth)};
+    string_line = strjoin(line, ',');
+    fid = fopen(parameters.outfile_volume, 'a');
+    fprintf(fid,'%s\n',string_line);
+    fclose(fid);
+end
+for i = 1:length(files2)
+    filename = fullfile(parameters.image_folder2, files2(i).name);
+    disp('Loading data:');
+    data = loadData(filename, parameters);
+    maximumProjection = imadjust(max(data.imageAll, [], 3));
+    [~, lengthPx, diameterPx] = measureGUI(maximumProjection);
+    tendon = Tendon(lengthPx, diameterPx, parameters);
+    
+    line = {files2(i).name, num2str(tendon.volume), num2str(tendon.length),...
         num2str(tendon.diameter), num2str(tendon.depth)};
     string_line = strjoin(line, ',');
     fid = fopen(parameters.outfile_volume, 'a');
