@@ -6,6 +6,8 @@ parameters.scale = [0.3095 0.3095 2]; % [um] physical x y and z dimension of the
 parameters.measurementDepth = 60; %[um]
 parameters.alternatingChannels = 1; % if set to 1 channels are alternating in the tiff file, otherwise first n/2 images are channelAll last images channelDead
 parameters.reverseOrderOfChannels = 0; % 0 means channelAll first, 1 means channelDead first
+parameters.flipStackZOrder = 1; % reverse the z-order of the image stack
+parameters.maximum16BitValue = 2000; % Value used for scaling of the 16Bit images (see 'functions/loadData.m')
 
 %% Additional parameters for tendonFibroblastQuant2D
 parameters.minSizeUm2 = 20; % [um^2] minimum area to be considered a nucleus
@@ -13,12 +15,13 @@ parameters.maxSizeUm2 = 150; % [um^2] maximum area to still be considered a sing
 parameters.hugeArtefactsUm2 = 350; % [um^2] the area of a 'blob' for it to be considered an artefact BEFORE applying watershed seg.
 parameters.saveRatioImage = true; % Set to true if you want to save the ratios visualization
 parameters.saveDeadAliveImage = true; % Set to true if you wat to save the dead/alive visualization (based on parameters.deathThresholdRatio)
+parameters.saveIntensityPlot = true; % Set to true if you want to save a plot of the mean intensities through the z-stack (to check stack orientation)
 parameters.deathThresholdRatio = 0.5; % the channel ratio (channelDead/channelAll) at wich a cell is considered dead
 parameters.adaptiveSensitivity = 0.4; % [0-1]
 parameters.watershedSensitivity = 1; % increase if image is oversegmented
 parameters.medfiltWindowsize = 2; % increase if nuclei seem fuzzy
-parameters.maximumExpectedRatio = 1.25; %channel ratio with maximum color for visualization
-parameters.minimumExpectedRatio = 0; %c hannel ratio with minimum color for visualization
+parameters.maximumExpectedRatio = 1.25; %channel ratio with maximum color for visualization (darkred)
+parameters.minimumExpectedRatio = 0; %channel ratio with minimum color for visualization (darkblue)
 
 %% Additional parameters for tendonFibroblastCountOvergrown
 parameters.stepSize = 10; % [um] depth of the z-projection steps

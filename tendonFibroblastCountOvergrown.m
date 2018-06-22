@@ -41,7 +41,7 @@ for i = 1:length(files)
     %% Find Start of imagestack and crop out the region to be evaluated (better performance)
     disp('Crop image stack:')
     tic
-    parameters.startIndex = findStartIndexByMeanIntensity(data);
+    parameters.startIndex = findStartIndexByMeanIntensity(data, parameters);
     parameters.endIndex = parameters.startIndex + ceil(parameters.measurementDepth/parameters.scale(3));
     if parameters.startIndex > 1
         parameters.startIndex = parameters.startIndex-1; %add a layer at the beginning

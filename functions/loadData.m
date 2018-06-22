@@ -2,7 +2,7 @@ function [data] = loadData(filename, parameters)
 %loadData Load data from a 2-channel .tf8 or .tif stack.
 %   The function assumes the two channels are alternating in the orininal
 %   file. Both a 'uint-16' version (data.dataAll/Dead) and a 'double'
-%   version (scaled 16-bit values from 0-2000 to 0-1) (data.imageAll/Dead)
+%   version (scaled 16-bit values from 0-parameters.maximum16BitValue to 0-1) (data.imageAll/Dead)
 %   is returned in the struct data. If parameters.alternatingChannels is
 %   set to 1, the images are loaded in alternating fashion (1. image
 %   channelAll, 2. image channelDead, etc...) otherwise the first half of
@@ -25,8 +25,14 @@ if parameters.reverseOrderOfChannels
     arrayStackAll = temp;
 end
 
-data.dataAll = flip(arrayStackAll, 3);
-data.dataDead = flip(arrayStackDead, 3);
-data.imageAll = mat2gray(data.dataAll, [0 2000]);
-data.imageDead = mat2gray(data.dataDead, [0 2000]);
+if parameters.flipStackZOrder
+    data.dataAll = flip(arrayStackAll, 3);
+    data.dataDead = flip(arrayStackDead, 3);
+else
+    data.dataAll = arrayStackAll;
+    data.dataDead = arrayStackDead;
+end
+
+data.imageAll = mat2gray(data.dataAll, [0 parameters.maximum16BitValue]);
+data.imageDead = mat2gray(data.dataDead, [0 parameters.maximum16BitValue]);
 end
