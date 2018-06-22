@@ -21,7 +21,7 @@ parameters.image_folder = fullfile(parameters.root_folder, 'Images');
 parameters.results_folder = fullfile(parameters.root_folder, ['Results2D_', strrep(strrep(char(datetime), ':', '-'), ' ', '-')]);
 parameters.outfile_summary = fullfile(parameters.results_folder, '01_ResultsSummary.csv');
 parameters.maximumExpectedRatio = 1.25; %channel ratio with maximum color for visualization
-parameters.minimumExpectedRatio = 0; %channel ratio with minimum color for visualization
+parameters.minimumExpectedRatio = 0; %c hannel ratio with minimum color for visualization
 
 
 parameters.pixelArea = prod(parameters.scale(1:2));
@@ -60,7 +60,7 @@ for i = 1:length(files)
     %% Find Start of imagestack and crop out the region the be evaluated (better performance)
     disp('Crop image stack:')
     tic
-    parameters.startIndex = findStartIndexFromBinary(data);
+    parameters.startIndex = findStartIndexByMeanIntensity(data);
     parameters.endIndex = parameters.startIndex + ceil(parameters.measurementDepth/parameters.scale(3));
     if parameters.startIndex > 1
         parameters.startIndex = parameters.startIndex-1; %add a layer at the beginning
