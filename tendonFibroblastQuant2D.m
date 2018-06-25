@@ -1,3 +1,48 @@
+% Script for viability quantification of tendon fibroblast image 2 channel
+% image stacks (channelAll and channelDead containing all or dead cells).
+% A maximum intensity z-projection starting at the top of the tendon down
+% to a defined depth is evaluated. The channelAll is used for segmentation
+% of the nuclei by applying an adaptive threshold and subsequent watershed
+% segmentation. The resulting segmented nuclei are used to count the cells
+% and determine the viability of the cell by comparing the intensities
+% between the two channels.
+%
+% Author: Max Hess <hess.max.timo@gmail.com>
+% Created: Mai 2018
+% Modified: June 2018
+%
+% Dependencies:
+% - loadParameters.m
+% - functions/writeStruct.m
+% - functions/loadData.m
+%   - loadtiff.m
+% - functions/findStartIndexByMeanIntensity.m
+% - functions/createBinaryMask.m
+%   - functions/bwwatershed
+% - functions/processImage2D.m
+%   - functions/concatImages2D.m
+% 
+% Instructions:
+% (1) Specify the 'General parameters' and 'Additional parameters for
+%     tendonFibroblastQuant2D' in the 'loadParameters.m' file.
+% (2) Put all your images in a folder named 'Images', the
+%     parent-directory of which has to be referenced in 'loadParamteres.m'.
+% (3) Run this script and find your results in a folder named
+%     Results2D_DATETIME.
+%
+% Output files:
+% - 00_Parameters.txt       - 1 file containing the parameter settings
+% - 01_ResultsSummary.csv   - 1 file containing all the results
+% - imageName.csv           - 1 file/image containing individual results
+% - imageName_deatAlive.png - 1 file/image dead/alive visualization
+%                             (only if parameters.saveDeadAliveImage = true)
+% - imageName_ratio.png     - 1 file/image dead/all-ration visualized in
+%                             colors (red-blue)
+%                             (only if parameters.saveRatioImage = true)
+% - imageName_plot.png      - 1 file/image with plot of mean image
+%                             intensities and evaluated part of stack
+%                             (only if parameters.saveIntensityPlot = true)
+
 clear all;
 mfilepath = fileparts(which(mfilename));
 addpath(fullfile(mfilepath, 'functions'));

@@ -1,3 +1,40 @@
+% Script for cell count estimation of overgrown tendon image stacks. The
+% original image stack is separated into smaller volumes which in turn are
+% evaluated by calculating a maximum intensity z-projection, applying an
+% adaptive treshold and deviding the resulting area by the mean area of a
+% nucleus.
+%
+% Author: Max Hess <hess.max.timo@gmail.com>
+% Created: June 2018
+% Modified: -
+%
+% Dependencies:
+% - loadParameters.m
+% - functions/writeStruct.m
+% - functions/loadData.m
+%   - functions/loadtiff.m
+% - functions/findStartIndexByMeanIntensity.m
+% - functions/writeColorStack.m
+%   - functions/saveastiff.m
+% 
+% Instructions:
+% (1) Specify the 'General parameters' and 'Additional parameters for
+%     tendonFibroblastCountOvergrown' in the 'loadParameters.m' file.
+% (2) Put all your overgrown images in a folder named 'CrowdedImages', the
+%     parent-directory of which has to be referenced in 'loadParamteres.m'.
+% (3) Run this script and find your results in a folder named
+%     ResultsCrowded_DATETIME.
+%
+% Output files:
+% - 00_Parameters.txt      - 1 file containing the parameter settings
+% - 01_ResultsSummary.csv  - 1 file containing all the results
+% - imageName_vis.tif      - 1 file/image with visualization as tif-stack,
+%                            only if parameters.visualizeResults = true
+% - imageName_plot.png     - 1 file/image with plot of mean image
+%                            intensities and evaluated part of stack
+%                            (only if parameters.saveIntensityPlot = true)
+
+
 clear all;
 mfilepath = fileparts(which(mfilename));
 addpath(fullfile(mfilepath, 'functions'));
@@ -102,6 +139,6 @@ for i = 1:length(files)
             overlay = imoverlay(img, perim, 'blue');
             outstack(:, :, j, :) = overlay;
         end
-        writeColorStack(outstack, fullfile(parameters.results_folder, [parameters.name(1:end-4), '.tif']))
+        writeColorStack(outstack, fullfile(parameters.results_folder, [parameters.name(1:end-4), '_vis.tif']))
     end         
 end

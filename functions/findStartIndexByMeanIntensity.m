@@ -27,7 +27,7 @@ hold on
 plot(xline, yline, 'r', 'LineWidth', 3);
 xlabel('Image Index');
 ylabel('Mean Pixel Intensity');
-saveas(fig, fullfile(parameters.results_folder, [parameters.name(1:end-4), '.png']));
+saveas(fig, fullfile(parameters.results_folder, [parameters.name(1:end-4), '_plot.png']));
 close(fig);
 end
 

@@ -8,6 +8,7 @@ parameters.alternatingChannels = 1; % if set to 1 channels are alternating in th
 parameters.reverseOrderOfChannels = 0; % 0 means channelAll first, 1 means channelDead first
 parameters.flipStackZOrder = 1; % reverse the z-order of the image stack
 parameters.maximum16BitValue = 2000; % Value used for scaling of the 16Bit images (see 'functions/loadData.m')
+parameters.saveIntensityPlot = true; % Set to true if you want to save a plot of the mean intensities through the z-stack (to check stack orientation)
 
 %% Additional parameters for tendonFibroblastQuant2D
 parameters.minSizeUm2 = 20; % [um^2] minimum area to be considered a nucleus
@@ -15,7 +16,6 @@ parameters.maxSizeUm2 = 150; % [um^2] maximum area to still be considered a sing
 parameters.hugeArtefactsUm2 = 350; % [um^2] the area of a 'blob' for it to be considered an artefact BEFORE applying watershed seg.
 parameters.saveRatioImage = true; % Set to true if you want to save the ratios visualization
 parameters.saveDeadAliveImage = true; % Set to true if you wat to save the dead/alive visualization (based on parameters.deathThresholdRatio)
-parameters.saveIntensityPlot = true; % Set to true if you want to save a plot of the mean intensities through the z-stack (to check stack orientation)
 parameters.deathThresholdRatio = 0.5; % the channel ratio (channelDead/channelAll) at wich a cell is considered dead
 parameters.adaptiveSensitivity = 0.4; % [0-1]
 parameters.watershedSensitivity = 1; % increase if image is oversegmented
